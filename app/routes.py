@@ -79,3 +79,71 @@ def add_barang():
         }
     }
     return jsonify(response), 201
+
+# Endpoint untuk mengambil semua data aset
+@bp.route('/aset', methods=['GET'])
+def get_aset():
+    asets = Aset.query.all()
+    output = []
+    for aset in asets:
+        aset_data = {
+            'id': aset.id,
+            'nama_aset': aset.nama_aset,
+            'tahun': aset.tahun,
+            'nilai_aset': aset.nilai_aset,
+            'lokasi_aset': aset.lokasi_aset,
+            'pemilik_aset': aset.pemilik_aset
+        }
+        output.append(aset_data)
+
+    response = {
+        "statusCode": 200,
+        "message": "Data aset berhasil diambil",
+        "response": output
+    }
+    return jsonify(response)
+
+# Endpoint untuk menambahkan data aset
+@bp.route('/aset', methods=['POST'])
+def add_aset():
+    data = request.get_json()
+
+    if not data or not 'nama_aset' in data or not 'tahun' in data or not 'nilai_aset' in data or not 'lokasi_aset' in data or not 'pemilik_aset' in data:
+        return jsonify({
+            "statusCode": 400,
+            "message": "Data tidak lengkap",
+            "response": None
+        }), 400
+
+    new_aset = Aset(
+        nama_aset=data['nama_aset'],
+        tahun=data['tahun'],
+        nilai_aset=data['nilai_aset'],
+        lokasi_aset=data['lokasi_aset'],
+        pemilik_aset=data['pemilik_aset']
+    )
+
+    try:
+        db.session.add(new_aset)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "statusCode": 500,
+            "message": f"Kesalahan dalam menambahkan data: {str(e)}",
+            "response": None
+        }), 500
+
+    response = {
+        "statusCode": 201,
+        "message": "Data aset berhasil ditambahkan",
+        "response": {
+            "id": new_aset.id,
+            "nama_aset": new_aset.nama_aset,
+            "tahun": new_aset.tahun,
+            "nilai_aset": new_aset.nilai_aset,
+            "lokasi_aset": new_aset.lokasi_aset,
+            "pemilik_aset": new_aset.pemilik_aset
+        }
+    }
+    return jsonify(response), 201
