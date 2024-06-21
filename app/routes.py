@@ -81,7 +81,7 @@ def add_barang():
     return jsonify(response), 201
 
 # Endpoint untuk mengambil semua data aset
-@bp.route('/aset', methods=['GET'])
+@bp.route('/getAset', methods=['GET'])
 def get_aset():
     asets = Aset.query.all()
     output = []
