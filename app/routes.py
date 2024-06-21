@@ -104,7 +104,7 @@ def get_aset():
     return jsonify(response)
 
 # Endpoint untuk menambahkan data aset
-@bp.route('/aset', methods=['POST'])
+@bp.route('/addAset', methods=['POST'])
 def add_aset():
     data = request.get_json()
 

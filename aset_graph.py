@@ -24,6 +24,10 @@ def load_data():
 # Mengambil data dari tabel aset
 df_aset = load_data()
 
+# Menambahkan judul dan icon
+st.title('Aset Graph')
+st.image('https://upload.wikimedia.org/wikipedia/commons/7/73/Logo_kementerian_keuangan_republik_indonesia.png', width=100)
+
 # Menambahkan header
 st.header('Data Aset')
 
