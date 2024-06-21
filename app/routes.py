@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from .models import Barang
+from .models import Aset, Barang
 from . import db
 
 bp = Blueprint('main', __name__)

@@ -13,67 +13,36 @@ db_config = {
     'database': 'postgres'
 }
 
-# Membuat engine SQLAlchemy
-engine = create_engine(f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}")
-
-# Fungsi untuk mengambil data dari tabel barang
-def load_data(table_name):
-    query = f"SELECT * FROM {table_name}"
+# Membuat koneksi ke database
+@st.cache_data  # Meng-cache DataFrame
+def load_data():
+    engine = create_engine(f"postgresql+psycopg2://{db_config['user']}:{db_config['password']}@{db_config['host']}:{db_config['port']}/{db_config['database']}")
+    query = "SELECT * FROM aset"
     df = pd.read_sql(query, engine)
     return df
 
-# Memuat data barang dan aset
-df_barang = load_data('barang')
-df_aset = load_data('aset')
+# Mengambil data dari tabel aset
+df_aset = load_data()
 
-# Membuat aplikasi Streamlit
-st.title('Data Barang dan Aset')
+# Menambahkan header
+st.header('Data Aset')
 
-# Tab untuk data barang dan aset
-tab1, tab2 = st.tabs(['Barang', 'Aset'])
+# Filter berdasarkan lokasi aset
+locations = df_aset['lokasi_aset'].unique()
+selected_location = st.selectbox('Pilih Lokasi Aset', locations)
 
-with tab1:
-    st.header('Data Barang')
-    
-    # Filter berdasarkan nama barang
-    product_names = df_barang['name'].unique()
-    selected_product = st.selectbox('Pilih Nama Produk', product_names)
+# Filter data berdasarkan lokasi aset yang dipilih
+filtered_aset = df_aset[df_aset['lokasi_aset'] == selected_location]
 
-    # Filter data berdasarkan pilihan
-    filtered_barang = df_barang[df_barang['name'] == selected_product]
+# Menampilkan data yang difilter
+st.write('Data Aset yang Dipilih:')
+st.write(filtered_aset)
 
-    # Menampilkan data yang difilter
-    st.write('Data Barang yang Dipilih:')
-    st.write(filtered_barang)
-
-    # Membuat chart
-    st.write('Chart Harga vs Jumlah')
-    plt.figure(figsize=(10, 6))
-    sns.barplot(x='harga', y='jumlah', data=filtered_barang)
-    plt.title('Harga vs Jumlah')
-    plt.xlabel('Harga')
-    plt.ylabel('Jumlah')
-    st.pyplot(plt)
-
-with tab2:
-    st.header('Data Aset')
-    
-    # Filter berdasarkan nama aset
-    asset_names = df_aset['nama_aset'].unique()
-    selected_asset = st.selectbox('Pilih Nama Aset', asset_names)
-
-    # Filter data berdasarkan pilihan
-    filtered_aset = df_aset[df_aset['nama_aset'] == selected_asset]
-
-    # Menampilkan data yang difilter
-    st.write('Data Aset yang Dipilih:')
-    st.write(filtered_aset)
-
-    # Membuat chart
-    st.write('Chart Nilai Aset vs Tahun')
-    plt.figure(figsize=(10, 6))
-    sns.lineplot(x='tahun', y='nilai_aset', data=filtered_aset, marker='o')
-    plt.title('Nilai Aset vs Tahun')
-    plt.xlabel('Tahun')
-    plt.ylabel('Nilai Aset')
-    st.pyplot(plt)
+# Membuat chart
+st.write('Chart Nilai Aset vs Tahun')
+plt.figure(figsize=(10, 6))
+sns.lineplot(x='tahun', y='nilai_aset', data=filtered_aset, marker='o')
+plt.title('Nilai Aset vs Tahun')
+plt.xlabel('Tahun')
+plt.ylabel('Nilai Aset')
+st.pyplot(plt)
