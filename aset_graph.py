@@ -6,11 +6,11 @@ from sqlalchemy import create_engine
 
 # Konfigurasi database PostgreSQL
 db_config = {
-    'user': 'postgres',
-    'password': 'ganteng',
-    'host': '127.0.0.1',
-    'port': '5432',
-    'database': 'postgres'
+    'user': 'kbd',
+    'password': 'P3nG9un4GAd4ng#!',
+    'host': '10.216.33.4',
+    'port': '5435',
+    'database': 'db_pool'
 }
 
 # Membuat koneksi ke database
@@ -41,6 +41,15 @@ filtered_aset = df_aset[df_aset['lokasi_aset'] == selected_location]
 # Menampilkan data yang difilter
 st.write('Data Aset yang Dipilih:')
 st.write(filtered_aset)
+# Fitur ekspor CSV
+
+csv = filtered_aset.to_csv(index=False)
+st.download_button(
+    label="Download CSV",
+    data=csv,
+    file_name='filtered_aset.csv',
+    mime='text/csv',
+)
 
 # Membuat chart
 st.write('Chart Nilai Aset vs Tahun')
@@ -50,3 +59,5 @@ plt.title('Nilai Aset vs Tahun')
 plt.xlabel('Tahun')
 plt.ylabel('Nilai Aset')
 st.pyplot(plt)
+
+
