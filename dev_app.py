@@ -58,9 +58,12 @@ st.markdown(f"""
 st.header("Persentase PSP per Kementerian/Lembaga")
 fig, ax = plt.subplots(figsize=(12, 8))
 sns.barplot(x='persentase_PSP', y='nama_kl', data=percentage_data.sort_values(by='persentase_PSP'), palette="Blues_d")
-ax.set_xlabel('Persentase PSP (%)')
-ax.set_ylabel('Kementerian/Lembaga')
+ax.set_xlabel('Persentase PSP (%)', fontsize=14)
+ax.set_ylabel('Kementerian/Lembaga', fontsize=14)
 ax.set_title('Persentase PSP per Kementerian/Lembaga', fontsize=16, color="#007acc")
+ax.grid(True, linestyle='--', linewidth=0.5)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
 st.pyplot(fig)
 
 # Analisis tambahan
@@ -75,9 +78,12 @@ else:
 st.header("Top 10 Kementerian/Lembaga dengan Persentase PSP Terendah")
 fig, ax = plt.subplots(figsize=(12, 8))
 sns.barplot(x='persentase_PSP', y='nama_kl', data=top_10_lowest_kl, palette="Reds_d")
-ax.set_xlabel('Persentase PSP (%)')
-ax.set_ylabel('Kementerian/Lembaga')
+ax.set_xlabel('Persentase PSP (%)', fontsize=14)
+ax.set_ylabel('Kementerian/Lembaga', fontsize=14)
 ax.set_title('Top 10 Kementerian/Lembaga dengan Persentase PSP Terendah', fontsize=16, color="#ff0000")
+ax.grid(True, linestyle='--', linewidth=0.5)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
 st.pyplot(fig)
 
 # Analisis tambahan berdasarkan kepemilikan
@@ -85,12 +91,15 @@ st.header("Analisis Distribusi PSP untuk Kepemilikan Tertentu")
 specific_kepemilikan = "Bersertifikat atas nama Pemerintah RI c.q Kementerian/ Lembaga"
 filtered_data = data[data['kepemilikan'] == specific_kepemilikan]
 
-plt.figure(figsize=(12, 8))
+fig, ax = plt.subplots(figsize=(12, 8))
 sns.histplot(filtered_data['PSP'], bins=30, kde=True, color='skyblue')
-plt.xlabel('PSP')
-plt.ylabel('Frekuensi')
-plt.title(f'Distribusi PSP untuk Kepemilikan: "{specific_kepemilikan}"', fontsize=16, color="#007acc")
-st.pyplot()
+ax.set_xlabel('PSP', fontsize=14)
+ax.set_ylabel('Frekuensi', fontsize=14)
+ax.set_title(f'Distribusi PSP untuk Kepemilikan: "{specific_kepemilikan}"', fontsize=16, color="#007acc")
+ax.grid(True, linestyle='--', linewidth=0.5)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+st.pyplot(fig)
 
 # Close connection
 conn.close()
