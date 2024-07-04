@@ -22,7 +22,7 @@ def conn_hash_func(_):
 @st.cache_data(hash_funcs={psycopg2.extensions.connection: conn_hash_func})
 def load_data(conn):
     query = """
-    SELECT nama_kl, no_psp
+    SELECT nama_kl, no_psp, kepemilikan
     FROM pool_siman_eksternal.v_ma_aset_tanah
     """
     data = pd.read_sql_query(query, conn)
@@ -79,6 +79,18 @@ ax.set_xlabel('Persentase PSP (%)')
 ax.set_ylabel('Kementerian/Lembaga')
 ax.set_title('Top 10 Kementerian/Lembaga dengan Persentase PSP Terendah', fontsize=16, color="#ff0000")
 st.pyplot(fig)
+
+# Analisis tambahan berdasarkan kepemilikan
+st.header("Analisis Distribusi PSP untuk Kepemilikan Tertentu")
+specific_kepemilikan = "Bersertifikat atas nama Pemerintah RI c.q Kementerian/ Lembaga"
+filtered_data = data[data['kepemilikan'] == specific_kepemilikan]
+
+plt.figure(figsize=(12, 8))
+sns.histplot(filtered_data['PSP'], bins=30, kde=True, color='skyblue')
+plt.xlabel('PSP')
+plt.ylabel('Frekuensi')
+plt.title(f'Distribusi PSP untuk Kepemilikan: "{specific_kepemilikan}"', fontsize=16, color="#007acc")
+st.pyplot()
 
 # Close connection
 conn.close()
