@@ -19,10 +19,12 @@ def get_no_psp_data():
            SUM(CASE WHEN no_psp IS NOT NULL THEN 1 ELSE 0 END) AS count_null,
            COUNT(*) AS total
     FROM pool_siman_eksternal.v_ma_aset_tanah
-    GROUP BY nama_kl limit 15
+    GROUP BY nama_kl
     """
     data = pd.read_sql_query(query, conn)
     data['percentage'] = data.apply(lambda row: (row['count_null'] / row['total']) * 100 if row['total'] > 0 else 0, axis=1)
+    # Mengurutkan data berdasarkan percentage dan mengambil 10 nilai terendah
+    data = data.sort_values(by='percentage').head(10)
     return data[['nama_kl', 'percentage']]
 
 # Fungsi untuk mengambil data dari tabel dan menghitung total status_sengketa per nama_kl
@@ -32,7 +34,7 @@ def get_status_sengketa_data():
            status_sengketa,
            COUNT(*) AS total
     FROM pool_siman_eksternal.v_ma_aset_tanah
-    GROUP BY nama_kl, status_sengketa limit 15
+    GROUP BY nama_kl, status_sengketa
     """
     data = pd.read_sql_query(query, conn)
     return data
@@ -46,10 +48,10 @@ if st.button('Tampilkan Chart Persentase PSP'):
     
     # Membuat chart dengan Altair
     no_psp_chart = alt.Chart(no_psp_data).mark_bar().encode(
-        x=alt.X('nama_kl', sort=alt.EncodingSortField(field='percentage', order='descending'), axis=alt.Axis(title='Instansi')),
+        x=alt.X('nama_kl', sort=alt.EncodingSortField(field='percentage', order='ascending'), axis=alt.Axis(title='Instansi')),
         y=alt.Y('percentage', axis=alt.Axis(title='Persen'))
     ).properties(
-        title='Persentase PSP Tanah Instansi ',
+        title='Top 10 Persentase PSP Terendah Tanah Instansi ',
         width=800,
         height=400
     )
