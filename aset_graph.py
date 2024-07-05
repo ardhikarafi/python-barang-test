@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 # Konfigurasi database PostgreSQL
 db_config = {
     'user': 'kbd',
-    'password': 'P3nG9un4GAd4ng#!',
+    'password': 'P3nG9un4GAd4n!',
     'host': '10.216.33.4',
     'port': '5435',
     'database': 'db_pool'
